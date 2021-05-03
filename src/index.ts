@@ -302,6 +302,32 @@ function activateCellVim(app: JupyterFrontEnd, tracker: INotebookTracker): Promi
             },
             isEnabled
         });
+        commands.addCommand('enter-normal-mode', {
+            label: 'Enter Noraml Mode',
+            execute: args => {
+                const current = getCurrent(args);
+
+                if (current) {
+                    const { content } = current;
+                    if (content.activeCell !== null) {
+                        current.content.mode = 'edit';
+                    }
+                }
+            },
+            isEnabled
+        });
+        commands.addCommand('run-cell-and-enter-command-mode', {
+            label: 'Run Cell and enter command mode',
+            execute: args => {
+                const current = getCurrent(args);
+
+                if (current) {
+                    const { context, content } = current;
+                    NotebookActions.run(content, context.sessionContext);
+                }
+            },
+            isEnabled
+        });
         commands.addCommand('leave-insert-mode', {
             label: 'Leave Insert Mode',
             execute: args => {
@@ -463,12 +489,12 @@ function activateCellVim(app: JupyterFrontEnd, tracker: INotebookTracker): Promi
         });
         commands.addKeyBinding({
             selector: '.jp-Notebook.jp-mod-editMode',
-            keys: ['Ctrl J'],
+            keys: ['Ctrl O', 'Ctrl J'],
             command: 'select-below-execute-markdown'
         });
         commands.addKeyBinding({
             selector: '.jp-Notebook.jp-mod-editMode',
-            keys: ['Ctrl K'],
+            keys: ['Ctrl O', 'Ctrl K'],
             command: 'select-above-execute-markdown'
         });
         commands.addKeyBinding({
@@ -480,6 +506,16 @@ function activateCellVim(app: JupyterFrontEnd, tracker: INotebookTracker): Promi
             selector: '.jp-Notebook:focus',
             keys: ['Ctrl I'],
             command: 'enter-insert-mode'
+        });
+        commands.addKeyBinding({
+            selector: '.jp-Notebook:focus',
+            keys: ['Ctrl L'],
+            command: 'enter-normal-mode'
+        });
+        commands.addKeyBinding({
+            selector: '.jp-Notebook.jp-mod-editMode',
+            keys: ['Ctrl H'],
+            command: 'run-cell-and-enter-command-mode'
         });
         commands.addKeyBinding({
             selector: '.jp-Notebook.jp-mod-editMode',
@@ -503,17 +539,17 @@ function activateCellVim(app: JupyterFrontEnd, tracker: INotebookTracker): Promi
         });
         commands.addKeyBinding({
             selector: '.jp-Notebook.jp-mod-editMode',
-            keys: ['Accel 1'],
+            keys: ['Ctrl O', 'C'],
             command: 'notebook:change-cell-to-code'
         });
         commands.addKeyBinding({
             selector: '.jp-Notebook.jp-mod-editMode',
-            keys: ['Accel 2'],
+            keys: ['Ctrl O', 'M'],
             command: 'notebook:change-cell-to-markdown'
         });
         commands.addKeyBinding({
             selector: '.jp-Notebook.jp-mod-editMode',
-            keys: ['Accel 3'],
+            keys: ['Ctrl O', 'R'],
             command: 'notebook:change-cell-to-raw'
         });
         commands.addKeyBinding({
